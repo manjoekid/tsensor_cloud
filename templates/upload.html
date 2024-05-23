@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV File Upload</title>
+    <!-- Adicione o link para a folha de estilo do Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{url_for('static', filename='tsensor.js')}}"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 bg-light">
+                <h2>Upload arquivo CSV</h2>
+                <h3>CSV Temperaturas</h3>
+                <input type="file" id="fileInputTemperature" accept=".csv" class="form-control mb-2">
+                <button onclick="uploadTemperatureFile()" class="btn btn-primary btn-block">Upload</button>
+                <p id="statusTemperature"></p>
+                <h3>CSV Logs</h3>
+                <input type="file" id="fileInputLog" accept=".csv" class="form-control mb-2">
+                <button onclick="uploadLogFile()" class="btn btn-primary btn-block">Upload</button>
+                <p id="statusLog"></p>
+            </div>
+            <div class="col-md-9">
+                <h2>Temperaturas</h2>
+
+                <div class="container col-lg-12" style="height: 500px;">
+                    <div class="row" style="height: 100%;">
+                        <div class="col-lg-12 pt-3">
+                            <canvas id="timeChart1"></canvas>
+                            
+                        </div>
+                    </div>
+                    <br>
+                    <h2>Detalhe Temperaturas</h2>
+                    <div class="row" style="height: 100%;">
+                        <div class="col-lg-12 pt-3">
+                            <canvas id="timeChart2"></canvas>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

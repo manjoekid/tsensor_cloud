@@ -1,0 +1,6 @@
+wheel
+gunicorn 
+flask
+numpy
+datetime
+python-dotenv
