@@ -214,10 +214,10 @@ function atualizaDadosGrafico2(dataX)
     var totalLenght = tempLines.length;
     var step = totalLenght/500;
     startPos = dataX * step;
-    if (startPos>=totalLenght-500){
-        startPos = totalLenght - 501;
+    if (startPos>=totalLenght-60){
+        startPos = totalLenght - 61;
     }
-    var lines4chart = compactLines(tempLines.slice(startPos,startPos+500));
+    var lines4chart = tempLines.slice(startPos,startPos+60);
     var linesArray = transformCSVArray(lines4chart);
     for (var x = 0; x < 60; x++)
     {
