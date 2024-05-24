@@ -6,10 +6,14 @@
     <title>CSV File Upload</title>
     <!-- Adicione o link para a folha de estilo do Bootstrap -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{url_for('static', filename='tsensor.js')}}"></script>
 </head>
 <body>
+    
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-3 bg-light">
@@ -18,15 +22,25 @@
                 <input type="file" id="fileInputTemperature" accept=".csv" class="form-control mb-2">
                 <button onclick="uploadTemperatureFile()" class="btn btn-primary btn-block">Upload</button>
                 <p id="statusTemperature"></p>
+                <!--
                 <h3>CSV Logs</h3>
                 <input type="file" id="fileInputLog" accept=".csv" class="form-control mb-2">
                 <button onclick="uploadLogFile()" class="btn btn-primary btn-block">Upload</button>
-                <p id="statusLog"></p>
+                <p id="statusLog"></p> 
+                -->
             </div>
             <div class="col-md-9">
                 <h2>Temperaturas</h2>
-
-                <div class="container col-lg-12" style="height: 500px;">
+                <div class="form-group row align-items-center">
+                    <label for="SwitchDelta" class="col-auto col-form-label">Temperatura Real</label>
+                    <div class="col-auto">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="SwitchDelta">
+                            <label class="custom-control-label" for="SwitchDelta">ΔT = T<sub>1</sub> - T<sub>médio</sub></label>
+                        </div>
+                    </div>
+                </div>
+                  <div class="container col-lg-12" style="height: 500px;">
                     <div class="row" style="height: 100%;">
                         <div class="col-lg-12 pt-3">
                             <canvas id="timeChart1"></canvas>

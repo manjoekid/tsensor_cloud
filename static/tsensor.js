@@ -1,8 +1,8 @@
-
 var timeChart1;
 var timeChart2;
 var tempLines;
 var logLines;
+var modoDelta = false;
 
 var rgbT = ["rgb(162,237,96)","rgb(221,207,230)","rgb(193,143,41)","rgb(236,186,50)",
             "rgb(212,61,251)","rgb(150,31,218)","rgb(47,193,57)","rgb(253,163,217)",
@@ -58,10 +58,13 @@ function checkCSVHeaders(headers) {
 
 function loadTemperatureFile(lines){
     var lines4chart ;
-    //if (lines.length>501){
+    if (lines.length>501){
         lines4chart = compactLines(lines.slice(1));
         atualizaDadosGrafico1(transformCSVArray(lines4chart));
-    //}
+    }else{
+        lines4chart = lines.slice(1);
+        atualizaDadosGrafico1(transformCSVArray(lines4chart));
+    }
     
 }
 
@@ -69,7 +72,7 @@ function compactLines(lines){
     var step = lines.length/500;
     let resultCompact = new Array(500);
     for(var i = 0; i < 500; i++){
-        resultCompact[i] = returnMax(lines.slice(Math.trunc(i*step),Math.trunc((i+1)*step)));
+        resultCompact[i] = returnMax(lines.slice(Math.trunc(i*step),Math.trunc((i+1)*step)));  // retorna o maior valor entre cada passo (step)
     }
     return resultCompact;
 }
@@ -158,14 +161,20 @@ function initiatetimeChart1(){
 
 function atualizaDadosGrafico1(temperaturas)
 {
-    for (var x = 0; x < 500; x++)
+    var chartSize = timeChart1.data.datasets[0].data.length;
+    for (var x = 0; x < chartSize; x++)
     {
         for (var i = 0; i < 32; i++) {
             timeChart1.data.datasets[i].data.shift();
-            timeChart1.data.datasets[i].data.push(temperaturas[x][i]);
         }
     }
-    timeChart1.data.labels = Array.from({length: 500}, (_, i) => temperaturas[i][0]);
+    for (var x = 0; x < temperaturas.length; x++)
+    {
+        for (var i = 0; i < 32; i++) {
+            timeChart1.data.datasets[i].data.push(temperaturas[x][i+1]);
+        }
+    }
+    timeChart1.data.labels = Array.from({length: temperaturas.length}, (_, i) => temperaturas[i][0]);
     timeChart1.update(); 
 }
 
@@ -173,7 +182,9 @@ function changePosition(e){
     var span = e.chart.chartArea.right - e.chart.chartArea.left;
     var dataX = ((e.x - e.chart.chartArea.left)/span)*500;
     console.log(dataX);
-    atualizaDadosGrafico2(dataX);
+    if (timeChart1.data.datasets[0].data.length >= 60){
+       atualizaDadosGrafico2(dataX);
+    }
 
 }
 
@@ -188,14 +199,14 @@ function atualizaDadosGrafico2(dataX)
     }
     var lines4chart = compactLines(tempLines.slice(startPos,startPos+500));
     var linesArray = transformCSVArray(lines4chart);
-    for (var x = 0; x < 500; x++)
+    for (var x = 0; x < 60; x++)
     {
         for (var i = 0; i < 32; i++) {
             timeChart2.data.datasets[i].data.shift();
-            timeChart2.data.datasets[i].data.push(linesArray[x][i]);
+            timeChart2.data.datasets[i].data.push(linesArray[x][i+1]);
         }
     }
-    timeChart2.data.labels = Array.from({length: 500}, (_, i) => linesArray[i][0]);
+    timeChart2.data.labels = Array.from({length: 60}, (_, i) => linesArray[i][0]);
     timeChart2.update(); 
 }
 function initiatetimeChart2(){
@@ -227,63 +238,19 @@ function initiatetimeChart2(){
         });
     }
     
-    for (var x = 0; x < 500; x++)
+    for (var x = 0; x < 60; x++)
     {
         for (var i = 0; i < 32; i++) {
             timeChart2.data.datasets[i].data.push(0);
         }
     }
 
-    timeChart2.data.labels = Array.from({length: 500}, (_, i) => 0);
+    timeChart2.data.labels = Array.from({length: 60}, (_, i) => 0);
     
 
     timeChart2.update();
 }
 
-
-function uploadLogFile() {
-    var fileInput = document.getElementById('fileInputLog');
-    var file = fileInput.files[0];
-    if (!file) {
-        document.getElementById('statusLog').innerHTML = 'Nenhum arquivo selecionado!';
-        return;
-    }
-
-    var reader = new FileReader();
-    reader.onload = function (e) {
-        var contents = e.target.result;
-        logLines = contents.split('\n');
-        if (logLines.length > 0) {
-            var headers = logLines[0].split(',');
-            if (checkCSVHeadersLog(headers)) {
-                loadTemperatureFile(logLines);
-            } else {
-                document.getElementById('statusLog').innerHTML = 'Arquivo inválido!';
-            }
-        }
-    };
-    reader.readAsText(file);
-}
-
-
-function checkCSVHeadersLog(headers) {
-    var requiredHeaders = ['Timestamp', 'Tipo', 'Mensagem'];
-    for (var i = 0; i < requiredHeaders.length; i++) {
-        if (headers[i] != requiredHeaders[i]) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function loadLogFile(lines){
-    var lines4chart ;
-    //if (lines.length>501){
-        lines4chart = compactLines(lines.slice(1));
-        atualizaDadosGrafico1(transformCSVArray(lines4chart));
-    //}
-    
-}
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -291,4 +258,19 @@ document.addEventListener('DOMContentLoaded', function () {
     initiatetimeChart1();
     initiatetimeChart2();
 
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const switchElement = document.getElementById('SwitchDelta');
+    const switchLabel = document.querySelector('label[for="SwitchDelta"]');
+    switchElement.addEventListener('change', function () {
+        if (this.checked) {
+            modoDelta = true;
+            
+        } else {
+            modoDelta = false;
+            
+        }
+        loadLogFile(tempLines);
+    });
 });
