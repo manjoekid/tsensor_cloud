@@ -4,8 +4,8 @@ After=network.target
 [Service]
 User=root
 Group=www-data
-WorkingDirectory=/home/ubuntu/tsensor/
-Environment="PATH=/home/ubuntu/tsensor/virtualenv/bin"
-ExecStart=/home/ubuntu/tsensor/virtualenv/bin/gunicorn --bind 0.0.0.0:5000 wsgi:app
+WorkingDirectory=/home/ubuntu/tsensor_cloud/
+Environment="PATH=/home/ubuntu/tsensor_cloud/virtualenv/bin"
+ExecStart=/home/ubuntu/tsensor_cloud/virtualenv/bin/gunicorn --bind 0.0.0.0:5000 wsgi:app
 [Install]
 WantedBy=multi-user.target

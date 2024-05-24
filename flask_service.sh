@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-APP_PATH="/home/ubuntu/tsensor/app.py"
-PID_FILE="/var/run/tsensor/tsensor_web_app.pid"
+APP_PATH="/home/ubuntu/tsensor_cloud/app.py"
+PID_FILE="/var/run/tsensor_cloud/tsensor_web_app.pid"
 
 
 start() {
@@ -10,7 +10,7 @@ start() {
     if [ -f $PID_FILE ]; then
         echo "The service is already running."
     else
-        nohup /home/ubuntu/tsensor/virtualenv/bin/gunicorn --bind 0.0.0.0:5000 wsgi:app &> /dev/null &
+        nohup /home/ubuntu/tsensor_cloud/virtualenv/bin/gunicorn --bind 0.0.0.0:5000 wsgi:app &> /dev/null &
         echo $! > $PID_FILE
         echo "Service started."
     fi
