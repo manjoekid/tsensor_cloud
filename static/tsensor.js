@@ -99,17 +99,37 @@ function returnMax(lines){
 }
 
 function transformCSVArray(lines){
-    //var resultArray = Array(lines.length).fill(new Array(33));
+    
     var resultArray = Array.from(Array(lines.length), () => new Array(33))
-    var values = new Array(33);
-    for (var i = 0; i < lines.length; i++){
-        values = lines[i].split(',');
-        resultArray[i][0] = values[0];
-        for (var j = 1; j < 33;j++){
-            resultArray[i][j] = parseFloat(values[j]);
+    var values = new Array(34);
+
+    if (modoDelta){
+        for (var i = 0; i < lines.length; i++){
+            values = lines[i].split(',');
+            values.push(getAvg(values.slice(1)));
+            resultArray[i][0] = values[0];
+            for (var j = 1; j < 33;j++){
+                resultArray[i][j] = parseFloat(values[j])-values[33];
+            }
+        }
+    }else {
+        for (var i = 0; i < lines.length; i++){
+            values = lines[i].split(',');
+            resultArray[i][0] = values[0];
+            for (var j = 1; j < 33;j++){
+                resultArray[i][j] = parseFloat(values[j]);
+            }
         }
     }
     return resultArray;
+}
+
+function getAvg(values) {
+    var total = 0;
+    for(var i = 0;i < values.length; i++) { 
+        total+=parseFloat(values[i]);
+    }
+    return total/values.length;
 }
 
 function initiatetimeChart1(){
@@ -271,6 +291,6 @@ document.addEventListener('DOMContentLoaded', function () {
             modoDelta = false;
             
         }
-        loadLogFile(tempLines);
+        loadTemperatureFile(tempLines);
     });
 });
